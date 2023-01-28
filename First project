@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class SimpleResponseForm : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            // Populate batch dropdown list
+            List<string> batches = GetBatches();
+            ddlBatch.DataSource = batches;
+            ddlBatch.DataBind();
+
+            // Populate agent dropdown list
+            List<string> agents = GetAgents(batches[0]);
+            ddlAgent.DataSource = agents;
+            ddlAgent.DataBind();
+
+            // Populate scenario dropdown list
+            List<string> scenarios = GetScenarios(agents[0]);
+            ddlScenario.DataSource = scenarios;
+            ddlScenario.DataBind();
+        }
+    }
+
+    protected void ddlBatch_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Populate agent dropdown list based on selected batch
+        List<string> agents = GetAgents(ddlBatch.SelectedValue);
+        ddlAgent.DataSource = agents;
+        ddlAgent.DataBind();
+
+        // Populate scenario dropdown list based on selected agent
+        List<string> scenarios = GetScenarios(ddlAgent.SelectedValue);
+        ddlScenario.DataSource = scenarios;
+        ddlScenario.DataBind();
+    }
+
+    protected void ddlAgent_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Populate scenario dropdown list based on selected agent
+        List<string> scenarios = GetScenarios(ddlAgent.SelectedValue);
+        ddlScenario.DataSource = scenarios;
+        ddlScenario.DataBind();
+    }
+
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+        // Get form values
+        string phone = txtPhone.Text;
+        string batch = ddlBatch.SelectedValue;
+        string agent = ddlAgent.SelectedValue;
+        string scenario = ddlScenario.SelectedValue;
+
+        // Add record to database
+        AddRecord(phone, batch, agent, scenario);
+
+        // Show success message
+        lblMessage.Text = "Record added successfully!";
+    }
+
+    private List<string> GetBatches()
+    {
+        // Code to retrieve batches from database
+        return new List<string> { "Batch 1", "Batch 2", "Batch 3" };
+    }
+
+    private List<string> GetAgents(string batch)
+    {
+        // Code to retrieve agents from database based on selected batch
+        if (batch == "Batch 1")
+            return new List<string> { "Agent 1", "Agent 2", "Agent 3" };
+        else if (batch == "Batch 2")
+            return new List<string> { "Agent 4", "Agent 5", "Agent 6" };
+        else
+            return new List<string> { "Agent 7", "Agent 8", "Agent
